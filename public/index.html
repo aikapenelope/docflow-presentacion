@@ -144,6 +144,22 @@
         .slide.is-active .reveal-in { opacity: 1; filter: blur(0); transform: scale(1) translateZ(0); }
         .slide.is-active .reveal-left { opacity: 1; transform: translateX(0) translateZ(0); }
 
+        /* Feature cards: staggered entrance */
+        .reveal-card { opacity: 0; transform: translateY(40px) scale(0.92) translateZ(0); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); will-change: transform, opacity; }
+        .slide.is-active .reveal-card { opacity: 1; transform: translateY(0) scale(1) translateZ(0); }
+        .reveal-card.stagger-1 { transition-delay: 150ms; }
+        .reveal-card.stagger-2 { transition-delay: 300ms; }
+        .reveal-card.stagger-3 { transition-delay: 450ms; }
+        .reveal-card.stagger-4 { transition-delay: 600ms; }
+        .reveal-card.stagger-5 { transition-delay: 750ms; }
+
+        /* Feature card hover glow */
+        .feature-card { position: relative; overflow: hidden; transition: transform 0.3s ease, border-color 0.3s ease; }
+        .feature-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .feature-card:hover { transform: translateY(-2px); border-color: rgba(56,189,248,0.3); }
+        .feature-card:hover::after { opacity: 1; }
+        @media (hover: none) { .feature-card:hover { transform: none; } }
+
         /* Slide-level entrance: subtle scale on content */
         .slide .slide-content-wrapper > * { transition: opacity 0.6s ease, transform 0.6s ease; }
         .slide:not(.is-active) .slide-content-wrapper > * { opacity: 0.7; transform: scale(0.97); }
@@ -519,7 +535,163 @@
             </div>
         </div>
 
-        <!-- Slide 6: El Paciente -->
+        <!-- Slide 6: IA Médica Avanzada -->
+        <div class="slide" data-color="purple">
+            <div class="slide-content-wrapper no-scrollbar">
+                <div class="w-full max-w-6xl mx-auto px-5">
+                    <div class="text-center mb-6 md:mb-12">
+                        <div class="mb-3 reveal-up">
+                            <span class="text-purple-400 font-bold tracking-[0.2em] uppercase text-[10px] md:text-xs">Inteligencia Clínica</span>
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-display font-bold reveal-up delay-100 leading-tight">La IA que entiende<br><span class="text-purple-400">medicina de verdad.</span></h2>
+                        <p class="text-sm md:text-lg text-slate-400 mt-3 md:mt-4 reveal-up delay-200 font-light max-w-2xl mx-auto">No es un chatbot genérico. Está entrenada para tu consulta, tu especialidad y tus pacientes.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
+                        <!-- Card 1: SOAP -->
+                        <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-1">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-list-check text-purple-400 text-sm md:text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm md:text-base mb-1">Notas en formato SOAP</h4>
+                                    <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Hablas durante la consulta y la IA organiza todo en Subjetivo, Objetivo, Análisis y Plan. Listo para firmar.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: CIE-10 -->
+                        <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-2">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-tags text-cyan-400 text-sm md:text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm md:text-base mb-1">Diagnósticos con CIE-10</h4>
+                                    <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Sugiere códigos internacionales basados en lo que escuchó. Tú confirmas o cambias. Historial siempre codificado.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Labs/Radiografías -->
+                        <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-3">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-microscope text-teal-400 text-sm md:text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm md:text-base mb-1">Analiza labs y radiografías</h4>
+                                    <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Subes un PDF de laboratorio o una imagen y la IA extrae valores, detecta anomalías y te resume lo importante.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Plantillas -->
+                        <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-shapes text-blue-400 text-sm md:text-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-sm md:text-base mb-1">10 especialidades listas</h4>
+                                    <p class="text-xs md:text-sm text-slate-400 leading-relaxed">Pediatría, Cardio, Gineco, Derma, Psiquiatría y más. Cada una con campos y prompts adaptados. Crea las tuyas también.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom stat -->
+                    <div class="text-center mt-6 md:mt-10 reveal-up delay-500">
+                        <div class="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-2 md:px-5 md:py-2.5">
+                            <i class="fa-solid fa-bolt text-purple-400 text-xs"></i>
+                            <span class="text-xs md:text-sm text-purple-300 font-medium">Tiempo promedio por nota: <strong class="text-white">45 segundos</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Todo en un solo lugar -->
+        <div class="slide" data-color="teal">
+            <div class="slide-content-wrapper no-scrollbar">
+                <div class="w-full max-w-6xl mx-auto px-5">
+                    <div class="text-center mb-6 md:mb-10">
+                        <h2 class="text-3xl sm:text-4xl md:text-5xl font-display font-bold reveal-up leading-tight">Todo en un solo lugar.<br><span class="text-teal-400">Sin complicaciones.</span></h2>
+                        <p class="text-sm md:text-lg text-slate-400 mt-3 md:mt-4 reveal-up delay-100 font-light max-w-2xl mx-auto">Reemplaza la agenda de papel, el Excel, las recetas a mano y los post-it. Una sola app.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                        <!-- Card 1: PWA -->
+                        <div class="glass-card feature-card rounded-xl p-4 md:p-5 border border-white/5 reveal-card stagger-1">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-mobile-screen text-teal-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xs md:text-sm">Cualquier dispositivo</h4>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Instálala en tu Android o iPhone sin tienda. Funciona con internet inestable.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Búsqueda -->
+                        <div class="glass-card feature-card rounded-xl p-4 md:p-5 border border-white/5 reveal-card stagger-2">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-magnifying-glass text-blue-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xs md:text-sm">Búsqueda instantánea</h4>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Encuentra cualquier paciente, cita o consulta en segundos. Un solo atajo: Cmd+K.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Reportes -->
+                        <div class="glass-card feature-card rounded-xl p-4 md:p-5 border border-white/5 reveal-card stagger-3">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-green-500/15 border border-green-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-chart-column text-green-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xs md:text-sm">Reportes de tu consultorio</h4>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Consultas por día, diagnósticos frecuentes, ingresos. Filtra por semana, mes o trimestre.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Onboarding -->
+                        <div class="glass-card feature-card rounded-xl p-4 md:p-5 border border-white/5 reveal-card stagger-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-yellow-500/15 border border-yellow-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-rocket text-yellow-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xs md:text-sm">Listo en 10 minutos</h4>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">6 pasos guiados: perfil, clínica, horario, primer paciente, primera consulta, plantillas. Ya.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Multitenancy -->
+                        <div class="glass-card feature-card rounded-xl p-4 md:p-5 border border-white/5 reveal-card stagger-5 sm:col-span-2 lg:col-span-1">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg bg-indigo-500/15 border border-indigo-500/25 flex items-center justify-center shrink-0">
+                                    <i class="fa-solid fa-building text-indigo-400 text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white text-xs md:text-sm">Clínicas con varios doctores</h4>
+                                    <p class="text-[10px] md:text-xs text-slate-400 mt-0.5">Cada profesional tiene su espacio aislado. Datos separados, misma plataforma. Escala contigo.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: El Paciente -->
         <div class="slide" data-color="blue">
             <div class="slide-content-wrapper no-scrollbar">
                 <div class="w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center">
@@ -1011,18 +1183,18 @@
         const runOnce = new Set();
         
         function runCounters(index) {
-            if (index === 7 && !runOnce.has('c70')) {
+            if (index === 9 && !runOnce.has('c70')) {
                 setTimeout(() => animateValue("counter-70", 0, 70, 2000), 600);
                 runOnce.add('c70');
             }
-            if (index === 8 && !runOnce.has('crev')) { 
+            if (index === 10 && !runOnce.has('crev')) { 
                 setTimeout(() => animateValue("counter-rev", 1250, 4850, 2500), 800);
                 setTimeout(() => animateValue("counter-m1", 0, 1940, 2000), 1000);
                 setTimeout(() => animateValue("counter-m2", 0, 3152, 2000), 1200);
                 setTimeout(() => animateValue("counter-m3", 0, 4850, 2000), 1400);
                 runOnce.add('crev');
             }
-            if (index === 11 && !runOnce.has('c5000')) { 
+            if (index === 13 && !runOnce.has('c5000')) { 
                 setTimeout(() => animateValue("counter-5000", 0, 5000, 2500), 600);
                 runOnce.add('c5000');
             }
