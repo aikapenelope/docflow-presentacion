@@ -1,0 +1,14 @@
+{
+  "name": "docflow-presentacion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Docflow - Presentación de producto optimizada para móvil",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./src/input.css -o ./public/styles.css --minify",
+    "build": "npm run build:css",
+    "dev": "npx tailwindcss -i ./src/input.css -o ./public/styles.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0"
+  }
+}
