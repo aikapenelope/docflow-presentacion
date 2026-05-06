@@ -166,11 +166,12 @@
         .reveal-card.stagger-5 { transition-delay: 750ms; }
 
         /* Feature card hover glow */
-        .feature-card { position: relative; overflow: hidden; transition: transform 0.3s ease, border-color 0.3s ease; }
-        .feature-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(56,189,248,0.08) 0%, transparent 60%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
-        .feature-card:hover { transform: translateY(-2px); border-color: rgba(56,189,248,0.3); }
+        .feature-card { position: relative; overflow: hidden; transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; }
+        .feature-card::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, rgba(56,189,248,0.4), transparent); opacity: 0.6; }
+        .feature-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(56,189,248,0.06) 0%, transparent 40%); opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
+        .feature-card:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.25); box-shadow: 0 15px 40px -10px rgba(0,0,0,0.5), 0 0 20px rgba(56,189,248,0.08); }
         .feature-card:hover::after { opacity: 1; }
-        @media (hover: none) { .feature-card:hover { transform: none; } }
+        @media (hover: none) { .feature-card:hover { transform: none; box-shadow: none; } }
 
         /* Slide-level entrance: subtle scale on content */
         .slide .slide-content-wrapper > * { transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -209,8 +210,12 @@
         }
         .slide.is-active .split-r { transform: translateY(0); }
         @media (min-width: 768px) { .slide.is-active .split-r { transform: translateX(0); } }
-        .floating-paper { position: absolute; background: white; width: 40px; height: 50px; border: 1px solid #ccc; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); opacity: 0.6;}
+        .floating-paper { position: absolute; background: white; width: 40px; height: 50px; border: 1px solid #ddd; box-shadow: 2px 4px 12px rgba(0,0,0,0.08); opacity: 0.5; border-radius: 4px;}
         @media (min-width: 768px) { .floating-paper { width: 60px; height: 80px; } }
+        .floating-icon { position: absolute; color: #94a3b8; opacity: 0.3; font-size: 1.2rem; }
+        @media (min-width: 768px) { .floating-icon { font-size: 1.8rem; } }
+        .slide.is-active .float-drift { animation: float-drift 8s ease-in-out infinite; }
+        @keyframes float-drift { 0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); } 50% { transform: translateY(-12px) rotate(calc(var(--r, 0deg) + 3deg)); } }
 
         /* Slide 3: Radar */
         .radar { position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 1px solid rgba(56, 189, 248, 0.2); }
@@ -398,7 +403,10 @@
                         </div>
                     </div>
 
-                    <!-- Mobile Swipe Hint -->
+                    <!-- Auto-start indicator -->
+                    <div class="mt-6 md:mt-8 text-slate-500 text-[10px] md:text-xs font-medium uppercase tracking-widest flex items-center justify-center reveal-up delay-500 gap-2">
+                        <span class="inline-block w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></span> La presentación inicia automáticamente
+                    </div>
                 </div>
             </div>
         </div>
@@ -407,8 +415,16 @@
         <div class="slide" data-color="blue">
             <div class="w-full h-full flex flex-col md:flex-row relative overflow-hidden">
                 <div class="w-full h-1/2 md:w-1/2 md:h-full bg-[#e2e8f0] flex flex-col justify-center px-6 md:px-16 py-8 relative split-l text-center md:text-left">
-                    <div class="floating-paper hidden md:block" style="top: 20%; left: 10%; transform: rotate(-15deg);"></div>
-                    <div class="floating-paper hidden md:block" style="top: 60%; left: 30%; transform: rotate(25deg);"></div>
+                    <!-- Floating papers and icons -->
+                    <div class="floating-paper float-drift" style="top: 15%; left: 8%; --r: -15deg;"></div>
+                    <div class="floating-paper float-drift" style="top: 55%; left: 25%; --r: 20deg; animation-delay: 1s;"></div>
+                    <div class="floating-paper float-drift hidden sm:block" style="top: 75%; left: 65%; --r: 10deg; animation-delay: 2s;"></div>
+                    <div class="floating-paper float-drift hidden md:block" style="top: 25%; left: 70%; --r: -8deg; animation-delay: 3s;"></div>
+                    <div class="floating-paper float-drift hidden md:block" style="top: 80%; left: 10%; --r: 25deg; animation-delay: 4s;"></div>
+                    <div class="floating-icon float-drift" style="top: 30%; left: 75%; --r: 5deg; animation-delay: 0.5s;"><i class="fa-solid fa-stethoscope"></i></div>
+                    <div class="floating-icon float-drift" style="top: 70%; left: 50%; --r: -10deg; animation-delay: 1.5s;"><i class="fa-solid fa-clock"></i></div>
+                    <div class="floating-icon float-drift hidden sm:block" style="top: 10%; left: 55%; --r: 8deg; animation-delay: 2.5s;"><i class="fa-solid fa-calendar"></i></div>
+                    <div class="floating-icon float-drift hidden md:block" style="top: 45%; left: 85%; --r: -5deg; animation-delay: 3.5s;"><i class="fa-solid fa-file-lines"></i></div>
                     
                     <div class="relative z-10 w-full max-w-sm mx-auto md:mx-0">
                         <div class="w-12 h-12 md:w-16 md:h-16 bg-slate-300 rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-8 shadow-inner mx-auto md:mx-0">
@@ -452,6 +468,8 @@
                     </div>
                     
                     <div class="w-full md:w-1/2 h-[300px] md:h-[500px] relative reveal-in delay-300 flex items-center justify-center">
+                        <!-- Radar background -->
+                        <div class="absolute w-[240px] h-[240px] md:w-[320px] md:h-[320px] rounded-full bg-gradient-to-b from-teal-950/40 to-slate-900/60 border border-teal-500/10 shadow-[inset_0_0_60px_rgba(20,184,166,0.1)]"></div>
                         <div class="radar"></div>
                         <div class="relative w-[220px] h-[220px] md:w-[300px] md:h-[300px]">
                             <div class="map-node delay-200" style="top: 20%; left: 30%;"></div>
@@ -565,7 +583,7 @@
                         <!-- Card 1: SOAP -->
                         <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-1">
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center shrink-0">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-purple-500/15 border border-purple-500/25 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(139,92,246,0.2)]">
                                     <i class="fa-solid fa-list-check text-purple-400 text-sm md:text-lg"></i>
                                 </div>
                                 <div>
@@ -578,7 +596,7 @@
                         <!-- Card 2: CIE-10 -->
                         <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-2">
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center shrink-0">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
                                     <i class="fa-solid fa-tags text-cyan-400 text-sm md:text-lg"></i>
                                 </div>
                                 <div>
@@ -591,7 +609,7 @@
                         <!-- Card 3: Labs/Radiografías -->
                         <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-3">
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-teal-500/15 border border-teal-500/25 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(20,184,166,0.2)]">
                                     <i class="fa-solid fa-microscope text-teal-400 text-sm md:text-lg"></i>
                                 </div>
                                 <div>
@@ -604,7 +622,7 @@
                         <!-- Card 4: Plantillas -->
                         <div class="glass-card feature-card rounded-2xl p-5 md:p-6 border border-white/5 reveal-card stagger-4">
                             <div class="flex items-start gap-4">
-                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shrink-0">
+                                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-blue-500/15 border border-blue-500/25 flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
                                     <i class="fa-solid fa-shapes text-blue-400 text-sm md:text-lg"></i>
                                 </div>
                                 <div>
@@ -732,13 +750,6 @@
                                 </div>
                                 <div class="space-y-2"><div class="h-8 bg-slate-800/50 rounded-lg"></div><div class="h-12 bg-slate-800/50 rounded-lg"></div></div>
                             </div>
-                            <div class="fan-card w-full h-full bg-slate-800 rounded-2xl p-5 md:p-6 absolute top-0 left-0 flex flex-col opacity-70">
-                                <div class="flex items-center border-b border-white/5 pb-3 mb-4">
-                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-sm font-bold text-white mr-3">CR</div>
-                                    <div><div class="font-bold text-sm text-white">Carlos Ruiz</div><div class="text-[9px] text-slate-400 mt-1">62 años - B(+)</div></div>
-                                </div>
-                                <div class="space-y-2"><div class="h-10 bg-slate-900/50 rounded-lg border border-white/5"></div><div class="h-14 bg-slate-900/50 rounded-lg border border-white/5"></div></div>
-                            </div>
                             <div class="fan-card w-full h-full glass-card rounded-2xl p-5 md:p-6 absolute top-0 left-0 z-20 flex flex-col">
                                 <div class="flex items-center border-b border-white/10 pb-4 md:pb-5 mb-4 md:mb-5">
                                     <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-lg md:text-xl font-bold text-white mr-3 md:mr-4 shadow-inner">JP</div>
@@ -752,6 +763,13 @@
                                     <div class="flex items-center text-yellow-400 text-[10px] md:text-xs font-bold mb-1 uppercase tracking-wider"><i class="fa-solid fa-sparkles mr-1"></i> Sugerencia IA</div>
                                     <div class="text-white text-xs md:text-sm">Considerar ajuste dosis Losartán.</div>
                                 </div>
+                            </div>
+                            <div class="fan-card w-full h-full bg-slate-800 rounded-2xl p-5 md:p-6 absolute top-0 left-0 flex flex-col opacity-70">
+                                <div class="flex items-center border-b border-white/5 pb-3 mb-4">
+                                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-sm font-bold text-white mr-3">CR</div>
+                                    <div><div class="font-bold text-sm text-white">Carlos Ruiz</div><div class="text-[9px] text-slate-400 mt-1">62 años - B(+)</div></div>
+                                </div>
+                                <div class="space-y-2"><div class="h-10 bg-slate-900/50 rounded-lg border border-white/5"></div><div class="h-14 bg-slate-900/50 rounded-lg border border-white/5"></div></div>
                             </div>
                         </div>
                     </div>
@@ -1251,6 +1269,7 @@
 
         // --- Autoplay ---
         const AUTOPLAY_DELAY = 7000; // 7 seconds per slide
+        const FIRST_SLIDE_DELAY = 4000; // 4 seconds for first slide
         const PAUSE_AFTER_INTERACTION = 12000; // 12s pause after user touches
         let autoplayTimer = null;
         let pauseTimer = null;
@@ -1261,7 +1280,6 @@
                 if (currentSlide < slides.length - 1) {
                     nextSlide();
                 } else {
-                    // Loop back to start
                     goToSlide(0);
                 }
             }, AUTOPLAY_DELAY);
@@ -1285,7 +1303,7 @@
         // Init
         updateUI();
         setTimeout(() => triggerAnimations(0), 100);
-        setTimeout(startAutoplay, AUTOPLAY_DELAY); // Start after first slide displays
+        setTimeout(startAutoplay, FIRST_SLIDE_DELAY); // First slide advances after 4s
 
         // Prevent overscroll/bounce on iOS
         document.body.addEventListener('touchmove', (e) => {
