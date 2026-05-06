@@ -91,22 +91,27 @@
             background-size: 30px 30px;
             mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
             -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
-            transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: transform;
         }
 
         /* --- Layout --- */
         #slider-track {
-            display: flex; height: 100dvh; width: 100vw;
-            transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-            position: relative; z-index: 10;
-            will-change: transform;
+            position: relative; height: 100dvh; width: 100vw; z-index: 10;
+            overflow: hidden;
         }
 
         .slide {
-            min-width: 100vw; height: 100dvh; display: flex; align-items: center; justify-content: center;
-            position: relative; overflow: hidden; perspective: 1000px;
+            position: absolute; inset: 0; width: 100vw; height: 100dvh;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; perspective: 1000px;
+            opacity: 0; transform: scale(1.04); pointer-events: none;
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
             contain: layout style paint;
+        }
+        .slide.is-active {
+            opacity: 1; transform: scale(1); pointer-events: auto; z-index: 5;
+        }
+        .slide.is-leaving {
+            opacity: 0; transform: scale(0.96); pointer-events: none; z-index: 4;
         }
         .slide:not(.is-active) {
             content-visibility: auto;
@@ -190,8 +195,7 @@
         .phone-mockup { box-shadow: -10px 15px 40px -10px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.1) inset; }
         .dynamic-island { width: 30%; height: 10px; background: #000; border-radius: 10px; position: absolute; top: 6px; left: 35%; }
 
-        .swipe-indicator { animation: swipe-bounce 2s infinite; opacity: 0.7; }
-        @keyframes swipe-bounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+
 
         /* Slide 2: Split */
         .split-l { filter: grayscale(1) contrast(1.1); z-index: 1;}
@@ -321,9 +325,8 @@
                 animation-iteration-count: 1 !important;
                 transition-duration: 0.2s !important;
             }
-            #slider-track { transition-duration: 0.3s !important; }
+            #slider-track { transition-duration: 0.2s !important; }
             .float-device { animation: none; }
-            .swipe-indicator { animation: none; }
         }
     </style>
 </head>
@@ -396,9 +399,6 @@
                     </div>
 
                     <!-- Mobile Swipe Hint -->
-                    <div class="md:hidden mt-8 text-slate-500 text-xs font-medium uppercase tracking-widest swipe-indicator flex items-center justify-center reveal-in delay-600">
-                        Desliza <i class="fa-solid fa-arrow-right ml-2"></i>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1090,7 +1090,6 @@
         // Performance: Use passive event listeners and requestAnimationFrame
         const track = document.getElementById('slider-track');
         const slides = document.querySelectorAll('.slide');
-        const bgGrid = document.querySelector('.bg-grid');
         const progressBarFill = document.getElementById('progress-bar-fill');
         let currentSlide = 0;
         let isAnimating = false;
@@ -1123,11 +1122,12 @@
             if (index === currentSlide) return;
             
             isAnimating = true;
-            currentSlide = index;
-            track.style.transform = `translateX(-${currentSlide * 100}vw)`;
             
-            // Parallax: move grid in opposite direction at 8% speed
-            bgGrid.style.transform = `translateX(${currentSlide * 8}vw)`;
+            // Add leaving class to current slide
+            slides[currentSlide].classList.add('is-leaving');
+            slides[currentSlide].classList.remove('is-active');
+            
+            currentSlide = index;
 
             // Haptic feedback (Android + supported browsers)
             if (navigator.vibrate) navigator.vibrate(8);
@@ -1135,7 +1135,11 @@
             triggerAnimations(currentSlide);
             updateUI();
             
-            setTimeout(() => { isAnimating = false; }, 800);
+            setTimeout(() => {
+                // Clean up leaving state
+                slides.forEach(s => s.classList.remove('is-leaving'));
+                isAnimating = false;
+            }, 900);
         }
 
         function nextSlide() { goToSlide(currentSlide + 1); }
@@ -1233,23 +1237,55 @@
 
         // "Volver al inicio" button with rewind effect
         document.getElementById('btn-volver').addEventListener('click', () => {
-            // Brief flash effect on track
-            track.style.transition = 'transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+            slides[currentSlide].classList.add('is-leaving');
+            slides[currentSlide].classList.remove('is-active');
             currentSlide = 0;
-            track.style.transform = 'translateX(0)';
-            bgGrid.style.transform = 'translateX(0)';
             if (navigator.vibrate) navigator.vibrate([8, 50, 8]);
             triggerAnimations(0);
             updateUI();
             setTimeout(() => {
-                track.style.transition = 'transform 0.8s cubic-bezier(0.22, 1, 0.36, 1)';
+                slides.forEach(s => s.classList.remove('is-leaving'));
                 isAnimating = false;
-            }, 1200);
+            }, 900);
         });
+
+        // --- Autoplay ---
+        const AUTOPLAY_DELAY = 7000; // 7 seconds per slide
+        const PAUSE_AFTER_INTERACTION = 12000; // 12s pause after user touches
+        let autoplayTimer = null;
+        let pauseTimer = null;
+
+        function startAutoplay() {
+            stopAutoplay();
+            autoplayTimer = setInterval(() => {
+                if (currentSlide < slides.length - 1) {
+                    nextSlide();
+                } else {
+                    // Loop back to start
+                    goToSlide(0);
+                }
+            }, AUTOPLAY_DELAY);
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+        }
+
+        function pauseAutoplay() {
+            stopAutoplay();
+            if (pauseTimer) clearTimeout(pauseTimer);
+            pauseTimer = setTimeout(startAutoplay, PAUSE_AFTER_INTERACTION);
+        }
+
+        // Pause on any user interaction
+        document.addEventListener('touchstart', pauseAutoplay, { passive: true });
+        document.addEventListener('click', pauseAutoplay, { passive: true });
+        document.addEventListener('keydown', pauseAutoplay, { passive: true });
 
         // Init
         updateUI();
         setTimeout(() => triggerAnimations(0), 100);
+        setTimeout(startAutoplay, AUTOPLAY_DELAY); // Start after first slide displays
 
         // Prevent overscroll/bounce on iOS
         document.body.addEventListener('touchmove', (e) => {
