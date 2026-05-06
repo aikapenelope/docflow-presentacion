@@ -291,6 +291,33 @@
         .nav-btn:active { transform: translateY(-50%) scale(0.95); }
         #prev-btn { left: calc(16px + var(--safe-left)); }
         #next-btn { right: calc(16px + var(--safe-right)); }
+
+        /* Pause/Play button */
+        #pause-btn {
+            position: fixed; bottom: calc(24px + var(--safe-bottom)); right: calc(20px + var(--safe-right));
+            width: 40px; height: 40px; border-radius: 50%; z-index: 50;
+            background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.3s ease;
+            color: white;
+        }
+        #pause-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+        #pause-btn:active { transform: scale(0.9); }
+        #pause-btn::before {
+            content: '';
+            display: inline-block; width: 10px; height: 12px;
+            border-left: 3px solid white; border-right: 3px solid white;
+        }
+        #pause-btn.is-paused::before {
+            border-left: none; border-right: none;
+            width: 0; height: 0;
+            border-top: 7px solid transparent; border-bottom: 7px solid transparent;
+            border-left: 11px solid white;
+        }
+        @media (min-width: 768px) {
+            #pause-btn { width: 44px; height: 44px; bottom: calc(30px + var(--safe-bottom)); }
+        }
         
 
 
@@ -348,6 +375,7 @@
     <!-- Navigation -->
     <button id="prev-btn" class="nav-btn" aria-label="Slide anterior"><i class="fa-solid fa-chevron-left text-sm"></i></button>
     <button id="next-btn" class="nav-btn" aria-label="Siguiente slide"><i class="fa-solid fa-chevron-right text-sm"></i></button>
+    <button id="pause-btn" aria-label="Pausar presentación"></button>
 
 
     <div id="slider-track">
@@ -1270,9 +1298,7 @@
         // --- Autoplay ---
         const AUTOPLAY_DELAY = 7000; // 7 seconds per slide
         const FIRST_SLIDE_DELAY = 4000; // 4 seconds for first slide
-        const PAUSE_AFTER_INTERACTION = 12000; // 12s pause after user touches
         let autoplayTimer = null;
-        let pauseTimer = null;
 
         function startAutoplay() {
             stopAutoplay();
@@ -1289,16 +1315,24 @@
             if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
         }
 
-        function pauseAutoplay() {
-            stopAutoplay();
-            if (pauseTimer) clearTimeout(pauseTimer);
-            pauseTimer = setTimeout(startAutoplay, PAUSE_AFTER_INTERACTION);
-        }
+        // Pause/Play button
+        const pauseBtn = document.getElementById('pause-btn');
+        let isPaused = false;
 
-        // Pause on any user interaction
-        document.addEventListener('touchstart', pauseAutoplay, { passive: true });
-        document.addEventListener('click', pauseAutoplay, { passive: true });
-        document.addEventListener('keydown', pauseAutoplay, { passive: true });
+        pauseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isPaused) {
+                isPaused = false;
+                pauseBtn.classList.remove('is-paused');
+                pauseBtn.setAttribute('aria-label', 'Pausar presentación');
+                startAutoplay();
+            } else {
+                isPaused = true;
+                pauseBtn.classList.add('is-paused');
+                pauseBtn.setAttribute('aria-label', 'Reanudar presentación');
+                stopAutoplay();
+            }
+        });
 
         // Init
         updateUI();
